@@ -82,6 +82,8 @@ class Person:
             print('%s正在看欧冠' % self._name)
 
 def get_set_test():
+    print('getter和setter：')
+
     kid = Person('Piggy',12)
     adult = Person('Pig',22)
 
@@ -95,7 +97,45 @@ def get_set_test():
     kid.age = 3
     print(kid.age)
 
+'''
+__slots__魔法
+    - 限定绑定属性
+'''
+class PersonSlot:
+    
+    # 限定只能绑定_name，_age，_gender属性
+    __slots__ = ('_name','_age','_gender')
+
+    def __init__(self, name, age):
+        self._name = name
+        self._age = age
+    
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def age(self):
+        return self._age
+
+    @age.setter
+    def age(self, value):
+        self._age = value + 10
+
+    def play(self):
+        if self._age <= 16:
+            print('%s正在看熊出没' % self._name)
+        else:
+            print('%s正在看欧冠' % self._name)
+
+def slot_test():
+    print('slot测试：')
+    
+    p = PersonSlot('崔爷',12)
+    p.play()
+    # p.is_asshold = True   //会报错
 
 if __name__ == '__main__':
     # run_clock()
-    get_set_test()
+    # get_set_test()
+    slot_test()
