@@ -306,10 +306,41 @@ def test_inherite():
     t.teach('养猪')
     t.watch_av()
 
+
+'''
+元类与多态
+'''
+import abc
+# 表明Pet是个元类，不能实例化
+class Pet(object, metaclass=abc.ABCMeta):
+    def __init__(self,nick):
+        self._nick = nick
+    
+    # 由该元类创建的类一定要定义这个方法
+    @abc.abstractmethod
+    def make_voice(self):
+        '''发出声音'''
+        pass
+
+class Cat(Pet):
+    def make_voice(self):
+        print('我是%s，我喵喵喵...' % self._nick)
+
+class Dog(Pet):
+    def make_voice(self):
+        print('我是%s，我汪汪汪...' % self._nick)
+
+def test_polimorphism():
+    pets = [Cat('石化鸡蛇'),Dog('旺财'),Cat('猪儒')]
+    for p in pets:
+        p.make_voice()
+    
+
 if __name__ == '__main__':
     # run_clock()
     # get_set_test()
     # slot_test()
     # triangle_test()
     # clock_test()
-    test_inherite()
+    # test_inherite()
+    test_polimorphism()
