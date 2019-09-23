@@ -7,6 +7,7 @@ from os import getpid
 from multiprocessing import Process
 
 def download_task(name):
+    print('启动下载进程，进程号[%d].' % getpid())
     print('开始下载 %s...' % name)
     time_spended = randint(1,5)
     sleep(time_spended)
