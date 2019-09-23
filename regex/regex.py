@@ -49,10 +49,35 @@ def abstract_phone_num():
     while m:
         print(m.group())
         m = pattern.search(sentence, m.end())
+
+
+'''
+替换字符串中的不良内容
+'''
+def sub_filthy_word():
+    sentence = '''
+你真是个傻屌，我就没见过你这么蠢的货，操！Fuck you
+    '''
+    purified = re.sub('[操艹]|fuck|shit|傻[比屄逼叉缺吊屌]|煞笔', '*', sentence, flags=re.IGNORECASE)
+    print(purified)
+    print(type(re.IGNORECASE))
+
+
+'''
+拆分长字符串
+'''
+def split_string():
+    poem = '床前明月光，疑是地上霜，举头望明月，低头思故乡。'
+    sentence_list = re.split(r'[，。,.]', poem)
+    while '' in sentence_list:
+        sentence_list.remove('')
+    print(sentence_list)
     
     
 
 
 if __name__ == "__main__":
     # verify_qq()
-    abstract_phone_num()
+    # abstract_phone_num()
+    # sub_filthy_word()
+    split_string()
