@@ -32,3 +32,8 @@ def download_in_multi_process():
 if __name__ == "__main__":
     # download_in_single_process()
     download_in_multi_process()
+
+
+'''
+我们也可以使用subprocess模块中的类和函数来创建和启动子进程，然后通过管道来和子进程通信，这些内容我们不在此进行讲解，有兴趣的读者可以自己了解这些知识
+'''
