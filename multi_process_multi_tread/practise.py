@@ -7,16 +7,13 @@ import tkinter.messagebox
 from threading import Thread, Timer
 
 class DownloadTask(Thread):
-    def __init__(self, button_instance):
-        super().__init__()
-        self._button = button_instance
 
     def run(self):
         # 模拟下载任务需要花费3s的时间
         time.sleep(3)
         tkinter.messagebox.showinfo('提示', '下载完成')
         # 重新启用下载按钮
-        self._button.config(state=tkinter.NORMAL)
+        button1.config(state=tkinter.NORMAL)
 
 
 
@@ -25,7 +22,10 @@ def show_about():
 
 def download():
     # 禁用下载按钮
-    pass
+    button1.config(state=tkinter.DISABLED)
+    # 通过daemon参数将线程设置为守护线程(主程序退出就不再保留执行)
+    # 在线程中处理耗时间的下载任务
+    DownloadTask(daemon=True).start()
 
 def time_consuming_task():
     top = tkinter.Tk()
@@ -33,7 +33,9 @@ def time_consuming_task():
     top.geometry('200x150')
     top.wm_attributes('-topmost', True)
 
+
     pannel = tkinter.Frame(top)
+    global button1
     button1 = tkinter.Button(pannel, text="下载", command=download)
     button1.pack(side='left')
     button2 = tkinter.Button(pannel, text="关于", command=show_about)
@@ -43,15 +45,4 @@ def time_consuming_task():
     tkinter.mainloop()
 
 if __name__ == "__main__":
-    # time_consuming_task()
-    def func(arg):
-        print(arg)
-
-    def wrap():
-        '''
-        因为python不支持匿名函数，所以只能用一层wrap来包装
-        '''
-        func(t)
-
-    t = Timer(1,wrap)
-    t.start()
+    time_consuming_task()
