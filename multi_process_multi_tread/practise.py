@@ -1,10 +1,12 @@
 '''
-耗时间的任务放到线程中以获得更好的用户体验。
+多线程
+    - 耗时间的任务放到线程中以获得更好的用户体验。
 '''
 import time
 import tkinter
 import tkinter.messagebox
 from threading import Thread, Timer
+from multiprocessing import Process, Queue
 
 class DownloadTask(Thread):
 
@@ -44,5 +46,49 @@ def time_consuming_task():
 
     tkinter.mainloop()
 
+
+'''
+多进程
+    - 使用多进程对复杂任务进行“分而治之”。
+'''
+def calculate_child_task(cal, queue):
+    total = 0
+    for num in cal:
+        total += num
+    print('子继承计算完毕，结果为：')
+    print(total)
+    queue.put(total)
+
+def calculate(to_be_cal):
+    processes = []
+    result_queue = Queue()
+    step = to_be_cal // 8 # 分成8个
+    start_time = time.time()
+    print(start_time)
+    for number in range(1,9):
+        # 计算出生成器的前和后
+        start = (number - 1) * step
+        end = number * step
+        # 生成器
+        if number == 8:
+            num_list = (n for n in range(start, (to_be_cal + 1)))
+        else:
+            num_list = (n for n in range(start, end))
+
+        # 子进程
+        p = Process(target=calculate_child_task, args=(num_list, result_queue))
+        processes.append(p)
+        p.start()
+    # 开始记录所有进程执行完成花费的时间
+    for p in processes:
+        p.join()
+    total = 0
+    while not result_queue.empty():
+        total += result_queue.get()
+    print('最终的计算结果为：%d' % total)
+    print(time.time())
+    print('耗费的时间为：%s' % (time.time() - start_time))
+
 if __name__ == "__main__":
-    time_consuming_task()
+    # time_consuming_task()
+    calculate(100000000)
