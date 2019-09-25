@@ -4,6 +4,7 @@ TCP套接字
 '''
 from socket import socket, SOCK_STREAM, AF_INET
 from datetime import datetime
+from time import sleep
 
 def main():
     '''
@@ -38,6 +39,8 @@ def main():
         '''
         5.发送数据
         '''
+        # 模拟需要处理1s
+        sleep(1)
         client.send(str(datetime.now()).encode('utf-8'))
         '''
         6.断开连接
