@@ -4,7 +4,34 @@ TCP套接字
 '''
 from socket import socket, SOCK_STREAM, AF_INET
 from datetime import datetime
+from base64 import b64encode
 from time import sleep
+from threading import Thread
+from json import dumps
+from random import randint
+
+class FileTransferHandler(Thread):
+    
+    def __init__(self, cclient, data):
+        super().__init__()
+        self._client = cclient
+        self._data = data
+    
+    def run(self):
+        my_dict = {}
+        my_dict['filename'] = 'test'
+        my_dict['fileData'] = self._data
+        json_str = dumps(my_dict)
+        '''
+        5.发送数据
+        '''
+        # 模拟需要处理1s
+        sleep(randint(1,4))
+        self._client.send(json_str.encode('utf-8'))
+        '''
+        6.断开连接  
+        '''
+        self._client.close()
 
 def main():
     '''
@@ -26,6 +53,11 @@ def main():
     '''
     server.listen(512)
     print('服务器开始监听...')
+    # 打开一个图片
+    with open('./img/005BYqpggy1g1ut8y6c4lj31c00u0gp8.jpg', 'rb') as f:
+        # 将二进制数据处理成base64再解码成字符串
+        data = b64encode(f.read())
+        data = data.decode('utf-8')
     while True:
         '''
         4.通过循环接收客户端的连接并作出相应的处理(提供服务)
@@ -36,16 +68,8 @@ def main():
         '''
         client, addr = server.accept()
         print(str(addr) + '；连接到服务器。')
-        '''
-        5.发送数据
-        '''
-        # 模拟需要处理1s
-        sleep(1)
-        client.send(str(datetime.now()).encode('utf-8'))
-        '''
-        6.断开连接
-        '''
-        client.close()
+        
+        FileTransferHandler(client, data).start()
 
 
 if __name__ == "__main__":
