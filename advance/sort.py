@@ -36,9 +36,38 @@ def bubble_sort(origin_items, comp=lambda x,y: x < y):
             break
     return items
 
+def merge_sort(items, comp=lambda x,y: x < y):
+    '''
+    归并排序（分治法）
+    '''
+    def merge(left, right, comp):
+        '''
+        合并,将两个有序列表合成一个有序列表
+        '''
+        items = []
+        lIndex = 0
+        rIndex = 0
+        while lIndex < len(left) and rIndex < len(right):
+            if comp(left[lIndex], right[rIndex]):
+                items.append(left[lIndex])
+                lIndex += 1
+            else:
+                items.append(right[rIndex])
+                rIndex += 1
+        items += left[lIndex:]
+        items += right[rIndex:]
+        return items
+
+    if len(items) < 2:
+        return items[:]
+    mid = len(items) // 2
+    left = merge_sort(items[:mid])
+    right = merge_sort(items[mid:])
+    return merge(left, right, comp)
 
 
 if __name__ == "__main__":
-    l = [1,23,554,5,73,34,677,9,4523,23,23,34,56,67,23]
+    l = [1,23,554,5,73,34,677,9,4523,23,23,34,56,67,23, 21]
     # print(seleted_sort(l))
-    print(bubble_sort(l))
+    # print(bubble_sort(l))
+    print(merge_sort(l))
