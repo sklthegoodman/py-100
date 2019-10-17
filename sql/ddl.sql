@@ -1,3 +1,5 @@
+-- DDL 数据定义语言
+
 -- 如果存在名为school的数据库就删除它
 DROP DATABASE IF EXISTS school;
 
