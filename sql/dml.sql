@@ -50,6 +50,10 @@ insert into tb_cource (couid, couname, credit, teaid) values
 (8888, '成本会计', 2, 3366),
 (9999, '审计学', 3, 3366);
 
+-- 插入课程数据
+insert into tb_cource (couid, couname, credit, teaid) values
+(1111, '印度文化的先进性', 2, 8888)
+
 
 -- 插入选课数据
 insert into tb_record (sid, cid, seldate, score) values
