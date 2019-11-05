@@ -74,3 +74,15 @@ select avg(score) as 平均分, sid from tb_record group by sid order by 平均�
 -- 查询平均成绩大于等于90分的学生的学号和平均成绩
 -- 分组以前的筛选使用where子句 / 分组以后的筛选使用having子句
 select sid as 学号, avg(score) as 平均分 from tb_record group by sid having 平均分>=90;
+
+-- 查询年龄最大的学生的姓名(子查询/嵌套的查询)
+select stuname, birth from tb_student where birth=(select min(birth) from tb_student);
+
+-- 查询年龄最大的学生的年龄和姓(子查询和运算)
+select stuname as 姓名, datediff(curdate(), birth) div 365 as 年龄 from tb_student where birth=(select min(birth) from tb_student);
+
+-- 查询选择了两门课以上的学生(子查询，分组条件，集合运算)
+-- 首先是从tb_record那里选择出sid>2（选择了两门）的学生id
+select sid from tb_record group by sid having count(sid)>2;
+-- 然后通过判断sid是否在上面的结果中，以选出所有符合的学生
+select * from tb_student where stuid in (select sid from tb_record group by sid having count(sid)>2);
