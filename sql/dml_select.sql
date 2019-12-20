@@ -18,9 +18,11 @@ select stuname, if(sex, '男', '女'), birth from tb_student where birth>='1980-
 select stuname, if(sex, '男', '女'), birth from tb_student where birth between '1980-1-1' and '1989-12-31';
 
 -- 查询所有姓杨的学生姓名和出生日期(模糊)
+-- %匹配任意个字
 select stuname, birth from tb_student where stuname like '杨%';
 
 -- 查询姓杨的名字的两个字的同学
+-- _匹配一个字
 select stuname, birth from tb_student where stuname like '杨_';
 
 -- 查询姓杨且名字为3个字的同学(模糊)
@@ -30,6 +32,7 @@ select stuname, birth from tb_student where stuname like '杨__';
 select stuname, birth from tb_student where stuname like '%不%' or stuname like '%嫣%';
 
 -- 查询没有录入家庭住址的学生(空值)
+-- is用来和数据结构的相同， is null 意义为null ，= null 意义为字符串的值就是null
 select stuname, sex, birth, collid from tb_student where addr is null;
 
 -- 查询录入了家庭住址的学生(空值)
@@ -84,5 +87,58 @@ select stuname as 姓名, datediff(curdate(), birth) div 365 as 年龄 from tb_s
 -- 查询选择了两门课以上的学生(子查询，分组条件，集合运算)
 -- 首先是从tb_record那里选择出sid>2（选择了两门）的学生id
 select sid from tb_record group by sid having count(sid)>2;
+
 -- 然后通过判断sid是否在上面的结果中，以选出所有符合的学生
+-- in 表示是否在某个表中
 select * from tb_student where stuid in (select sid from tb_record group by sid having count(sid)>2);
+
+-- 使用in的例子：
+-- 找出棉铃最小的男生和女生，并且显示他们的所有信息
+select * from tb_student where birth in (select max(birth) from tb_student group by sex);
+
+-- 查询学生姓名，课程名称，分数（多表查询  即笛卡尔查询）
+select stuname, couname, score from tb_student, tb_cource, tb_record where stuid=sid and couid=cid and score is not null;
+
+-- 查询学生姓名、课程名称以及成绩按成绩从高到低查询第11-15条记录(内连接+分页)
+select stuname as sn, 
+    couname as cn,
+    score 
+    from tb_student as ts
+    inner join tb_record as tr on ts.stuid=tr.sid 
+    inner join tb_cource as tc on tr.cid=tc.couid
+    where score is not null
+    order by score desc 
+    limit 5 offset 10; -- 指定翻页
+
+select stuname as sn,
+    couname as cn,
+    score
+    from tb_student as ts
+    inner join tb_record as tr on ts.stuid = tr.sid
+    inner join tb_cource as tc on tr.cid=tc.couid
+    where score > 60
+    order by score desc
+    limit 5, 10;
+
+-- 查询选课学生的姓名和平均成绩(子查询和连接查询)
+-- 使用多表查询
+select stuname as 姓名,
+    avgscore as 平均分
+    from tb_student as ts, 
+    (select avg(score) as avgscore, sid  from tb_record group by sid) as scoretable 
+    where scoretable.sid=ts.stuid
+    order by 平均分 desc;
+
+-- 使用内联查询
+select stuname as 姓名,
+    avgscore as 平均分
+    from tb_student as ts
+    inner join (select avg(score) as avgscore, sid from tb_record group by sid) as avgresult
+    where ts.stuid = avgresult.sid
+    order by avgscore desc;
+
+-- 内联查询方法
+-- 先确定主表，仍然使用FROM <表1>的语法；
+-- 再确定需要连接的表，使用INNER JOIN <表2>的语法；
+-- 然后确定连接条件，使用ON <条件...>，这里的条件是s.class_id = c.id，表示students表的class_id列与classes表的id列相同的行需要连接；
+-- 可选：加上WHERE子句、ORDER BY等子句
