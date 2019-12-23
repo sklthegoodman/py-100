@@ -142,3 +142,19 @@ select stuname as 姓名,
 -- 再确定需要连接的表，使用INNER JOIN <表2>的语法；
 -- 然后确定连接条件，使用ON <条件...>，这里的条件是s.class_id = c.id，表示students表的class_id列与classes表的id列相同的行需要连接；
 -- 可选：加上WHERE子句、ORDER BY等子句
+
+-- 查询每个学生的姓名和选课数量
+-- 以下是思路：
+-- 1.我们先写出：所有学生的选课数量
+select count(*), sid from tb_record group by sid;
+-- 2.再把上面的表和学生的表连接一起
+-- 用内连接合的话，会把没有选课的学生忽略掉
+select ts.stuname, ccount from tb_student as ts inner join 
+    (select count(*) as ccount, sid from tb_record group by sid) as counts
+    on ts.stuid = counts.sid;
+
+-- 如果用外连接，就不会有这样的问题
+select ts.stuname, ifnull(ccount, 0) as 选课数量 from tb_student as ts left join 
+    (select count(*) as ccount, sid from tb_record group by sid) as counts
+    on ts.stuid = counts.sid;
+
