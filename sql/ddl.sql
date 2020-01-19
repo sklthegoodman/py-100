@@ -38,7 +38,7 @@ create table tb_teacher(
     primary key (teaid),
     foreign key (collid) references tb_colledge (collid)
 );
-
+x
 -- 创建课程表
 create table tb_cource(
     couid int not null comment '编号',
