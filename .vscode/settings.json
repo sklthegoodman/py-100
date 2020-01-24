@@ -1,0 +1,4 @@
+{
+    "python.venvPath": "${workspaceFolder}/learning_log",
+    "python.pythonPath": "${workspaceFolder}/learning_log/ll_env/bin/python"
+}

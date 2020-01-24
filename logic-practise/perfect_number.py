@@ -10,7 +10,7 @@ def perfect(end):
     for num in range(1,end):
         total = 0
         for sub_num in range(1,int(math.sqrt(num)) + 1):
-            if num % sub_num == 0:
+            if num % sub_num == 0:e
                 total += sub_num
                 if sub_num > 1 and num // sub_num != sub_num:
                     total += num // sub_num
